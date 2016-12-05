@@ -246,8 +246,11 @@ new_df['PreviousResponse'] = new_df['Response'].shift(-1)
 
 
 # Faron's magic features. 
-new_df['magic1'] = new_df['Id'].diff().fillna(9999999).astype(int)
-new_df['magic2'] = new_df['Id'].iloc[::-1].diff().fillna(9999999).astype(int)
+new_df['magic1'] = new_df['Id'].loc[train_indices].diff().fillna(9999999).astype(int)
+new_df['magic2'] = new_df['Id'].loc[train_indices].iloc[::-1].diff().fillna(9999999).astype(int)
+
+new_df['magic1'] = new_df['Id'].loc[test_indices].diff().fillna(9999999).astype(int)
+new_df['magic2'] = new_df['Id'].loc[test_indices].iloc[::-1].diff().fillna(9999999).astype(int)
 
 new_df = new_df.sort_values(by=['StartTime', 'Id'], ascending=True)
 
@@ -318,7 +321,7 @@ def find_prob(y_prob, index):
 
 
 
-prob = find_prob(pred,2700)
+prob = find_prob(pred,2500)
 
 
 print("Train MCC: {}".format(matthews_corrcoef(dtrain.get_label(),(model.predict(dtrain) > prob).astype(int))))
